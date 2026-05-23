@@ -21,6 +21,10 @@ const musicMessage = document.querySelector("#musicMessage");
 
 const journalStorageKey = "daily-devotion-journals";
 const legacyStorageKey = "thursday-reflection-journal";
+const musicSources = [
+  "assets/background-prayer.m4a",
+  "assets/하루 시작 전 5분 기도반주 _ 5 minute for pray.m4a",
+];
 const devotions = window.DEVOTIONS ?? [];
 let currentDevotion = getInitialDevotion();
 
@@ -137,10 +141,32 @@ function renderHistory() {
   historyList.replaceChildren(...items);
 }
 
-startButton.addEventListener("click", () => {
+async function startBackgroundMusic() {
+  backgroundMusic.volume = 0.58;
+
+  for (const source of musicSources) {
+    backgroundMusic.src = source;
+
+    try {
+      await backgroundMusic.play();
+      musicButton.textContent = "배경 음악 중지";
+      musicMessage.textContent = "기도 반주가 재생되고 있어요.";
+      return true;
+    } catch {
+      backgroundMusic.pause();
+    }
+  }
+
+  musicMessage.textContent =
+    "음악 파일을 찾지 못했어요. assets 폴더의 파일 이름을 확인해주세요.";
+  return false;
+}
+
+startButton.addEventListener("click", async () => {
   intro.classList.add("hidden");
   reflection.classList.remove("hidden");
   window.scrollTo({ top: 0, behavior: "smooth" });
+  await startBackgroundMusic();
 });
 
 devotionSelect.addEventListener("change", () => {
@@ -150,21 +176,10 @@ devotionSelect.addEventListener("change", () => {
   }
 });
 
-musicButton.addEventListener("click", async () => {
-  if (backgroundMusic.paused) {
-    try {
-      await backgroundMusic.play();
-      musicButton.textContent = "배경 음악 끄기";
-      musicMessage.textContent = "기도 반주가 재생되고 있어요.";
-    } catch {
-      musicMessage.textContent = "브라우저가 재생을 막았어요. 버튼을 한 번 더 눌러보세요.";
-    }
-    return;
-  }
-
+musicButton.addEventListener("click", () => {
   backgroundMusic.pause();
-  musicButton.textContent = "배경 음악 켜기";
-  musicMessage.textContent = "기도 반주를 잠시 멈췄어요.";
+  musicButton.textContent = "배경 음악 중지됨";
+  musicMessage.textContent = "기도 반주를 멈췄어요.";
 });
 
 saveButton.addEventListener("click", () => {
