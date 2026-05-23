@@ -50,14 +50,19 @@
             <strong>하루 시작 전 5분 기도반주</strong>
           </div>
           <button class="music-button" id="musicButton" type="button">
-            배경 음악 켜기
+            배경 음악 중지
           </button>
           <audio
             id="backgroundMusic"
-            src="assets/background-prayer.m4a"
             preload="auto"
             loop
-          ></audio>
+          >
+            <source src="assets/background-prayer.m4a" type="audio/mp4" />
+            <source
+              src="assets/하루 시작 전 5분 기도반주 _ 5 minute for pray.m4a"
+              type="audio/mp4"
+            />
+          </audio>
           <p class="music-message" id="musicMessage" role="status"></p>
         </section>
 
